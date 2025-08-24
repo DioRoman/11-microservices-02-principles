@@ -4,11 +4,12 @@ from prometheus_flask_exporter import PrometheusMetrics, NO_PREFIX
 from passlib.hash import pbkdf2_sha256
 import jwt
 
+
 server = Flask(__name__)
 metrics = PrometheusMetrics(server, defaults_prefix=NO_PREFIX, buckets=[0.1, 0.5, 1, 1.5, 2], default_labels={"app_name": "security"})
 metrics.info('app_info', 'Application info', version='1.0')
 
-jwt_key = 'secret'
+jwt_key = getenv('JWT_SECRET_KEY', 'secret')  # Лучше брать из окружения
 data = {
     'bob': pbkdf2_sha256.hash('qwe123')
 }
@@ -19,49 +20,50 @@ def status():
 
 @server.route('/v1/token', methods=['POST'])
 def login():
-    if not request.json or not 'login' in request.json or not 'password' in request.json:
+    if not request.json or 'login' not in request.json or 'password' not in request.json:
         return make_response(jsonify({'error':'Bad request'})), 400
 
     login = request.json['login']
     password = request.json['password']
-    
-    if not login in data:
+
+    if login not in data:
         return make_response(jsonify({'error':'Unknown login or password'})), 401
 
     hash = data[login]
     if not pbkdf2_sha256.verify(password, hash):
         return make_response(jsonify({'error':'Unknown login or password'})), 401
 
-    return jwt.encode({'sub': login}, jwt_key, algorithm="HS256")
-
+    token = jwt.encode({'sub': login}, jwt_key, algorithm="HS256")
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+    return jsonify({'token': token})
 
 @server.route('/v1/token/validation', methods=['GET'])
 def validate():
     auth_header = request.headers.get('Authorization')
 
     if not auth_header:
-        return make_response(jsonify({'error':'Missing Authorization header'})), 401 
-    
-    try:
-        auth_header_parts = auth_header.split(' ')
-        auth_schema = auth_header_parts[0]
-        auth_token = auth_header_parts[1]
-    except IndexError:
-        return make_response(jsonify({'error':'Invalid Authorization header'})), 401 
+        return make_response(jsonify({'error':'Missing Authorization header'})), 401
 
-    if not auth_schema == 'Bearer':
-        return make_response(jsonify({'error':'Invalid Authorization schema'})), 401 
+    try:
+        auth_schema, auth_token = auth_header.split(' ', 1)
+    except ValueError:
+        return make_response(jsonify({'error':'Invalid Authorization header'})), 401
+
+    if auth_schema != 'Bearer':
+        return make_response(jsonify({'error':'Invalid Authorization schema'})), 401
 
     if not auth_token:
-        return make_response(jsonify({'error':'Invalid Authorization value'})), 401 
+        return make_response(jsonify({'error':'Invalid Authorization value'})), 401
 
     try:
-        return jwt.decode(auth_token, jwt_key, algorithms="HS256")
+        decoded = jwt.decode(auth_token, jwt_key, algorithms=["HS256"])
+        return jsonify(decoded)
     except jwt.ExpiredSignatureError:
-        return 'Signature expired. Please log in again.'
+        return make_response(jsonify({'error':'Signature expired. Please log in again.'}), 401)
     except jwt.InvalidTokenError:
-        return 'Invalid token. Please log in again.'
+        return make_response(jsonify({'error':'Invalid token. Please log in again.'}), 401)
 
 if __name__ == '__main__':
-    port = int(getenv('PORT') or '8080')
+    port = int(getenv('PORT', '8080'))
     server.run(host='0.0.0.0', port=port)

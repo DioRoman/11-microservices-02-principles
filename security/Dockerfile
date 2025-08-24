@@ -1,8 +1,20 @@
-FROM python:3.9-alpine
+# Use official lightweight Python 3.10 image
+FROM python:3.10-slim
+
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
+# Копируем файл зависимостей в контейнер
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+
+# Устанавливаем зависимости с фиксированными версиями
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем весь код приложения
 COPY src ./
 
-CMD [ "python", "./server.py" ]
+# Открываем порт приложения
+EXPOSE 8080
+
+# Команда запуска приложения
+CMD ["python", "./server.py"]
