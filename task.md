@@ -114,7 +114,7 @@ https://github.com/DioRoman/11-microservices-02-principles/blob/main/gateway/ngi
 
 <img width="2250" height="308" alt="Снимок экрана 2025-08-25 225945" src="https://github.com/user-attachments/assets/9d4a1df3-03a9-4fe1-9b19-d3d833f2e3f6" />
 
-**Вывод NGINX**
+**Вывод Docker Compose**
 
 <img width="1628" height="680" alt="Снимок экрана 2025-08-25 230215" src="https://github.com/user-attachments/assets/db1fca0e-7bd6-4a12-bf7f-03de289d3777" />
 
