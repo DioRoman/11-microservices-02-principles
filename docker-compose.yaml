@@ -29,6 +29,7 @@ services:
     restart: on-failure
     entrypoint: >
       /bin/sh -c "
+      sleep 5 &&
       until /usr/bin/mc alias set storage http://storage:9000 ${Storage_AccessKey:-STORAGE_ACCESS_KEY} ${Storage_Secret:-STORAGE_SECRET_KEY}; do
         echo 'Waiting for MinIO...'
         sleep 5
@@ -70,4 +71,3 @@ services:
       - security
     ports:
       - "80:80"
-

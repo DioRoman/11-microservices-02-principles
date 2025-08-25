@@ -1,7 +1,7 @@
 # Как запускать
 После написания nginx.conf для запуска выполните команду
 ```
-docker-compose up --build
+docker compose up --build --remove-orphans
 ```
 
 # Как тестировать
@@ -9,12 +9,12 @@ docker-compose up --build
 ## Login
 Получить токен
 ```
-curl -X POST -H 'Content-Type: application/json' -d '{"login":"bob", "password":"qwe123"}' http://localhost/token
+curl -X POST -H "Content-Type: application/json" -d '{"login":"bob","password":"qwe123"}' http://localhost/v1/token
 ```
 Пример
 ```
-$ curl -X POST -H 'Content-Type: application/json' -d '{"login":"bob", "password":"qwe123"}' http://localhost/token
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJib2IifQ.hiMVLmssoTsy1MqbmIoviDeFPvo-nCd92d4UFiN2O2I
+$ curl -X POST -H "Content-Type: application/json" -d '{"login":"bob","password":"qwe123"}' http://localhost/v1/token
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2IifQ.-51G5JQmpJleARHp8rIljBczPFanWT93d_N_7LQGUXU"}
 ```
 
 ## Test

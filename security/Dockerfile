@@ -13,8 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируем весь код приложения
 COPY src ./
 
-# Открываем порт приложения
-EXPOSE 8080
-
 # Команда запуска приложения
 CMD ["python", "./server.py"]
