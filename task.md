@@ -110,7 +110,11 @@ https://github.com/DioRoman/11-microservices-02-principles/blob/main/gateway/ngi
 
 `curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJib2IifQ.-51G5JQmpJleARHp8rIljBczPFanWT93d_N_7LQGUXU" http://localhost/v1/user/29a2eb42-dd4d-4b86-8378-33fbf58d1d19.png --output downloaded_image.jpg ; echo`
 
+**Скриншоты выполнения команд**
+
 <img width="2250" height="308" alt="Снимок экрана 2025-08-25 225945" src="https://github.com/user-attachments/assets/9d4a1df3-03a9-4fe1-9b19-d3d833f2e3f6" />
+
+**Вывод NGINX**
 
 <img width="1628" height="680" alt="Снимок экрана 2025-08-25 230215" src="https://github.com/user-attachments/assets/db1fca0e-7bd6-4a12-bf7f-03de289d3777" />
 
