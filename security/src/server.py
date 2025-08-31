@@ -9,7 +9,7 @@ server = Flask(__name__)
 metrics = PrometheusMetrics(server, defaults_prefix=NO_PREFIX, buckets=[0.1, 0.5, 1, 1.5, 2], default_labels={"app_name": "security"})
 metrics.info('app_info', 'Application info', version='1.0')
 
-jwt_key = getenv('JWT_SECRET_KEY', 'secret')  # Лучше брать из окружения
+jwt_key = 'secret'
 data = {
     'bob': pbkdf2_sha256.hash('qwe123')
 }
